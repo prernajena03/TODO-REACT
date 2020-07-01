@@ -6,7 +6,21 @@ import { nanoid } from "nanoid";
 
 
 function App(props) {
-
+  const [filter, setFilter] = useState('All');
+  const FILTER_MAP = {
+    All: () => true,
+    Active: task => !task.completed,
+    Completed: task => task.completed
+  };
+  const FILTER_NAMES = Object.keys(FILTER_MAP);
+  const filterList = FILTER_NAMES.map(name => (
+    <FilterButton
+      key={name}
+      name={name}
+      isPressed={name === filter}
+      setFilter={setFilter}
+    />
+  ));
   function addTask(name) {
     const newTask = { id: "id", name: name, completed: false };
     setTasks([...tasks, newTask]);
@@ -15,8 +29,21 @@ function App(props) {
     const remainingTasks = tasks.filter(task => id !== task.id);
     setTasks(remainingTasks);
   }
+  function editTask(id, newName) {
+    const editedTaskList = tasks.map(task => {
+    // if this task has the same ID as the edited task
+      if (id === task.id) {
+        //
+        return {...task, name: newName}
+      }
+      return task;
+    });
+    setTasks(editedTaskList);
+  }
   const [tasks, setTasks] = useState(props.tasks);
-  const taskList = tasks.map(task => (
+  const taskList = tasks
+  .filter(FILTER_MAP[filter])
+  .map(task => (
     <Todo
       id={task.id}
       name={task.name}
@@ -24,6 +51,7 @@ function App(props) {
       key={task.id}
       toggleTaskCompleted={toggleTaskCompleted}
       deleteTask={deleteTask}
+      editTask={editTask}
     />
   ));
   function toggleTaskCompleted(id) {
@@ -44,9 +72,7 @@ const headingText = `${taskList.length} ${tasksNoun} remaining`;
     <div className="todoapp stack-large">
       <Form addTask={addTask} />
       <div className="filters btn-group stack-exception">
-        <FilterButton />
-        <FilterButton />
-        <FilterButton />
+      {filterList}
       </div>
       <h2 id="list-heading">{headingText}</h2>
       <ul
