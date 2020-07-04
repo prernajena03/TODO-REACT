@@ -12,6 +12,10 @@ export default function Todo(props)  {
     setNewName("");
     setEditing(false);
   }
+
+  // two possible “templates", rather than the single template it's used so far:
+
+// (1)The "editing" template, when we are editing a todo. We're about to create this.
   const editingTemplate = (
     <form className="stack-small" onSubmit={handleSubmit}>
       <div className="form-group">
@@ -27,6 +31,7 @@ export default function Todo(props)  {
 />
       </div>
       <div className="btn-group">
+      {/*  onClick handler to the "Cancel" button in the editingTemplate, but this time we'll set isEditing to false so that it switches us back to the view template. */}
       <button
   type="button"
   className="btn todo-cancel"
@@ -42,6 +47,8 @@ export default function Todo(props)  {
       </div>
     </form>
   );
+  
+  // (2)The "view" template, when we are just viewing a todo; this is what we’ve used in rest of the tutorial so far.
   const viewTemplate = (
     <div className="stack-small">
       <div className="c-cb">
@@ -49,6 +56,7 @@ export default function Todo(props)  {
             id={props.id}
             type="checkbox"
             defaultChecked={props.completed}
+            // use an anonymous function to call props.toggleTaskCompleted() with a parameter of props.id
             onChange={() => props.toggleTaskCompleted(props.id)}
           />
           <label className="todo-label" htmlFor={props.id}>
@@ -56,12 +64,15 @@ export default function Todo(props)  {
           </label>
         </div>
         <div className="btn-group">
+        {/* setEditing() with a value of true when a user presses the "Edit" button in our viewTemplate, so that we can switch templates. */}
         <button type="button" className="btn" onClick={() => setEditing(true)}>
   Edit <span className="visually-hidden">{props.name}</span>
 </button>
           <button
             type="button"
             className="btn btn__danger"
+            // want to call props.deleteTask() when the "Delete" button is pressed. 
+            // deleteTask() needs to know the ID of the task that called it, so it can delete the correct task from the state
             onClick={() => props.deleteTask(props.id)}
           >
             Delete <span className="visually-hidden">{props.name}</span>
@@ -70,6 +81,7 @@ export default function Todo(props)  {
     </div>
   );
     return (
+      // Conditional rendering:our condition is "Is this task being edited?" Change the return statement inside Todo()
         <li className="todo stack-small">{isEditing ? editingTemplate : viewTemplate}
         <div className="c-cb">
         <input
@@ -85,6 +97,7 @@ export default function Todo(props)  {
           <button type="button" className="btn">
             Edit <span className="visually-hidden">Eat</span>
           </button>
+          
           <button type="button" className="btn btn__danger" onClick={() => props.deleteTask(props.id)}>
   Delete <span className="visually-hidden">{props.name}</span>
 </button>

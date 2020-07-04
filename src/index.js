@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
+
+// Tasks as data:pass DATA to <App /> as a prop, called tasks.
 const DATA = [
   { id: "todo-0", name: "Eat", completed: true },
   { id: "todo-1", name: "Sleep", completed: false },
@@ -10,6 +12,7 @@ const DATA = [
 ];
 ReactDOM.render(
   <React.StrictMode>
+  {/* array is now available to the App component as props.tasks. */}
     <App tasks={DATA} />
   </React.StrictMode>,
   document.getElementById('root')
